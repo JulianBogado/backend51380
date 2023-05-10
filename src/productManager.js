@@ -1,3 +1,4 @@
+import { error } from "console";
 import fs from "fs";
 
 export default class ProductManager {
@@ -18,7 +19,7 @@ export default class ProductManager {
       }
     } catch (error) {
       console.log("Hubo un error al cargar el archivo");
-      console.log(error)
+      console.log(error);
     }
   }
   async saveData() {
@@ -31,11 +32,32 @@ export default class ProductManager {
       console.log("Hubo un error al guardar el archivo ", error);
     }
   }
-  async addProduct(title, description, price, thumbnail, stock) {
+  async addProduct(inputData = {}) {
+    const { title, description, price, thumbnail, stock } = inputData;
     try {
-      if (!title || !description || !price || !thumbnail || !stock) {
-        console.log("Debe llenar todos los campos para agregar el producto");
+      if (!title || !description || !price || !stock) {
+        console.log(
+          `Debe llenar todos los campos para agregar el producto. Falta el campo ${
+            !title
+              ? "title"
+              : !description
+              ? "description"
+              : !price
+              ? "price"
+              : "stock"
+          }`
+        );
       } else {
+        const products = await this.loadData("./src/data.json");
+
+        if (this.products.length > 0) {
+          const maxCodeProduct = this.products.reduce((prev, current) => {
+            return prev.code > current.code ? prev : current;
+          });
+
+          this.lastId = maxCodeProduct.code;
+        }
+
         const product = {
           price: price,
           description: description,
@@ -44,8 +66,9 @@ export default class ProductManager {
           code: ++this.lastId,
           stock: stock,
         };
+
         this.products.push(product);
-        this.saveData();
+        await this.saveData();
       }
     } catch (error) {
       console.log("Hubo un error al agregar el producto ", error);
@@ -67,7 +90,7 @@ export default class ProductManager {
           ? this.products.find((item) => item.code === parseInt(code))
           : null;
       if (product) {
-        returns(product);
+        return product;
       } else {
         console.log(`Producto con código ${code} no encontrado`);
         return null;
@@ -78,44 +101,55 @@ export default class ProductManager {
       );
     }
   }
-  async updateProduct(code, field, value) {
+  async updateProduct(code, updatedFields = {}) {
+    const { title, description, price, thumbnail, stock } = updatedFields;
+
     try {
       await this.loadData();
-
-      const product = this.products.find((item) => item.code === code);
+      const productCode = parseInt(code);
+      const product = this.products.find((item) => item.code === productCode);
 
       if (product) {
-        product[field] = value;
+        if (productCode !== product.code) {
+          throw new Error("No se puede actualizar el ID del producto");
+        }
+
+        product.title = title ?? product.title;
+        product.description = description ?? product.description;
+        product.price = price ?? product.price;
+        product.thumbnail = thumbnail ?? product.thumbnail;
+        product.stock = stock ?? product.stock;
+
         await this.saveData();
-        this.loadData();
-        console.log(`Producto con id ${code} actualizado`);
+        await this.loadData();
+
+        console.log(`Producto con id ${productCode} actualizado`);
       } else {
-        console.log(`No se encontró el producto con id ${code}`);
+        console.log(`No se encontró el producto con id ${productCode}`);
       }
     } catch (error) {
       console.log(
-        `Hubo un error al actualizar el producto con id ${code}, error: ${error}`
+        `Hubo un error al actualizar el producto con id ${productCode}, error: ${error}`
       );
+      console.log(error);
     }
   }
   async deleteProduct(code) {
     try {
       await this.loadData();
+      const productCode = parseInt(code);
 
-      const product = this.products.find((item) => item.code === code);
+      const product = this.products.find((item) => item.code === productCode);
 
       if (product) {
-        this.products.splice(code - 1, 1);
-        console.log(`Se eliminó el producto con code ${code}`);
+        this.products.splice(productCode - 1, 1);
+        console.log(`Se eliminó el producto con code ${productCode}`);
         await this.saveData();
       } else {
-        console.log(`No se encontró el producto con code ${code}` );
+        console.log(`No se encontró el producto con code ${productCode}`);
       }
     } catch (error) {
       console.log("Hubo un error al eliminar el producto", error);
     }
   }
 }
-
-const nuevoProducto = new ProductManager("data.json");
-
