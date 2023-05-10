@@ -22,18 +22,22 @@ productsRouter.get("/", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json("Error al obtener los productos");
+    res.status(400).json({
+      status: "Failed",
+      msg: "Error al obtener los productos",
+      error: error,
+    });
   }
 });
 
 productsRouter.post("/", async (req, res) => {
   const detail = req.body;
   try {
-    await productManager.addProduct(detail);
+    const product = await productManager.addProduct(detail);
     res.status(201).json({
-      status: true,
+      status: "Success",
       msg: "Se agregó un nuevo producto",
-      payload: detail,
+      payload: { ...product },
     });
   } catch (error) {
     console.log(error);
@@ -46,7 +50,7 @@ productsRouter.get("/:pid", async (req, res) => {
     const producto = await productManager.getProductById(req.params.pid);
     if (producto) {
       res.status(200).json({
-        status: true,
+        status: "Success",
         msg: "Se encontro el producto",
         payoad: producto,
       });
@@ -55,7 +59,11 @@ productsRouter.get("/:pid", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json("Error al obtener el producto");
+    res.status(400).json({
+      status: "Failed",
+      msg: "Error al obtener los productos",
+      error: error,
+    });
   }
 });
 
@@ -67,19 +75,21 @@ productsRouter.put("/:pid", async (req, res) => {
     const producto = await productManager.getProductById(id);
     if (producto) {
       await productManager.updateProduct(id, updatedFields);
-      res
-        .status(200)
-        .json({
-          status: true,
-          msg: "Producto actualizado exitosamente",
-          payload: updatedFields,
-        });
+      res.status(200).json({
+        status: "Success",
+        msg: "Producto actualizado exitosamente",
+        payload: {...producto},
+      });
     } else {
       res.status(404).json("Producto no encontrado");
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json("Error al actualizar el producto");
+    res.status(500).json({
+      status: "Failed",
+      msg: "Error al actualizar el producto",
+      error: error,
+    });
   }
 });
 
@@ -100,6 +110,10 @@ productsRouter.delete("/:pid", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json("Error al eliminar el producto");
+    res.status(500).json({
+      status: "Failed",
+      msg: "Error al eliminar el producto",
+      error: error,
+    });
   }
 });
