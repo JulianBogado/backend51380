@@ -1,0 +1,39 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.h1{
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+}
+
+.h3{
+    margin: 5px;
+    padding: 5px;
+}
+
+.contenedorProductos{
+    border: 1px solid gray;
+    max-width: max-content;
+    padding: 5px;
+    margin: 5px;
+}
+
+.separadorProductos{
+    padding: 2px;
+    margin: 5px;
+    border: 1px solid gray;
+}
+
+.divCampos{
+    border: 1px solid gray;
+    width: 40%;
+    margin: auto;
+    margin-top: 30px;
+
+}
+

@@ -78,7 +78,7 @@ productsRouter.put("/:pid", async (req, res) => {
       res.status(200).json({
         status: "Success",
         msg: "Producto actualizado exitosamente",
-        payload: {...producto},
+        payload: { ...producto },
       });
     } else {
       res.status(404).json("Producto no encontrado");

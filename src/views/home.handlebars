@@ -1,0 +1,20 @@
+<div>
+  <h1 class="h1">Productos</h1>
+  {{#if productos}}
+        <h3 class="h3">Listado de productos</h3>
+        <div class="contenedorProductos">
+    {{#each productos}}
+      <div class="separadorProductos">
+        
+        <p>Artículo: {{this.title}} </p>
+
+        <p>Precio: ${{this.price}}</p>
+        
+      </div>
+    {{/each}}
+
+  {{else}}
+    <div> <p>No se encontraron productos</p> </div>
+    </div>
+  {{/if}}
+</div>

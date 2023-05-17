@@ -1,0 +1,57 @@
+<div class="divCampos">
+    <h3 class="text-center">Carga tu producto</h3>
+    <form id="product-form-realtime" >
+  <div class="mb-3 p-2">
+    <label for="title" class="form-label">Title: </label>
+    <input class="form-control" type="text" name="title" id="title" />
+  </div>
+  <div class="mb-3 p-2">
+    <label for="descri class="form-label"ption">Description: </label>
+    <input class="form-control" type="text" name="description" id="description" />
+  </div>
+  <div class="mb-3 p-2">
+    <label for="price" class="form-label">Price: </label>
+    <input class="form-control" type="number" name="price" id="price" />
+  </div>
+  <div class="mb-3 p-2">
+    <label for="thumbn class="form-label"ail">Thumbnail: </label>
+    <input class="form-control" type="text" name="thumbnail" id="thumbnail" />
+  </div>
+  <div class="mb-3 p-2">
+    <label for="stock" class="form-label">Stock: </label>
+    <input class="form-control" type="number" name="stock" id="stock" />
+  </div>
+  <div class="mb-3 p-2">
+    <label for="category" class="form-label">Category: </label>
+    <input class="form-control" type="text" name="category" id="category" />
+  </div>
+  <div class="mb-3 p-2">
+    <label for="code" class="form-label"> Code: </label>
+    <input class="form-control" type="number" name="code" id="code" />
+  </div>
+  <button type="submit" class="btn btn-primary ">Enviar</button>
+
+</form>
+</div>
+<ul class="products_list list-group list-group-light" id="product_list">
+
+  {{#each products}}
+    <li class="list-group-item d-flex justify-content-between align-items-center" id="{{this.id}}">
+      <div class="d-flex align-items-center">
+              <img src="{{this.thumbnail}}" alt="" style="width: 45px; height: 45px"
+        class="rounded-circle" />
+        <div class="ms-3">
+        <p class="fw-bold mb-1">{{this.title}}</p>
+        <p class="text-muted mb-0">Precio: ${{this.price}}</p>
+        <p class="text-muted mb-0">Categoría: {{this.category}}</p>
+        <button onclick="deleteProductWithSocket('{{this.id}}')" class="btn btn-primary">Delete</button>
+      </div>
+      </div>
+    </li>
+  {{/each}}
+</ul>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+  var socket = io();
+</script>

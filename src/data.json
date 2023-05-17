@@ -163,5 +163,16 @@
     "id": 15,
     "category": "comida",
     "stock": 2
+  },
+  {
+    "status": true,
+    "code": "872123",
+    "price": "250",
+    "description": "De carne",
+    "title": "Empanada",
+    "thumbnail": "www.urldementira.com",
+    "id": 16,
+    "category": "food",
+    "stock": 12
   }
 ]
