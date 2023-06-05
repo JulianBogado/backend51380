@@ -1,25 +1,18 @@
 import express from "express";
-import ProductManager from "../productManager.js";
 
-const productManager = new ProductManager("./src/data.json");
+import { ProductService } from "../services/products.services.js";
 
 export const productsRouter = express.Router();
 
+const Service = new ProductService();
+
 productsRouter.get("/", async (req, res) => {
   try {
-    const limit = req.query.limit;
-    const productos = await productManager.getProducts();
+    // Agregar el limit por query limit = req.query.limit;
+    const productos = await Service.getProducts();
     console.log(productos);
 
-    if (limit) {
-      res.status(200).json({
-        status: "Success",
-        msg: "Listado de Productos",
-        payload: productos.slice(0, limit),
-      });
-    } else {
-      res.status(200).json(productos);
-    }
+    res.status(200).json(productos);
   } catch (error) {
     console.log(error);
     res.status(400).json({
@@ -33,7 +26,7 @@ productsRouter.get("/", async (req, res) => {
 productsRouter.post("/", async (req, res) => {
   const detail = req.body;
   try {
-    const product = await productManager.addProduct(detail);
+    const product = await Service.addProduct(detail);
     res.status(201).json({
       status: "Success",
       msg: "Se agregó un nuevo producto",
@@ -47,7 +40,7 @@ productsRouter.post("/", async (req, res) => {
 
 productsRouter.get("/:pid", async (req, res) => {
   try {
-    const producto = await productManager.getProductById(req.params.pid);
+    const producto = await Service.getProductById(req.params.pid);
     if (producto) {
       res.status(200).json({
         status: "Success",
@@ -72,9 +65,9 @@ productsRouter.put("/:pid", async (req, res) => {
   const updatedFields = req.body;
 
   try {
-    const producto = await productManager.getProductById(id);
+    const producto = await Service.getProductById(id);
     if (producto) {
-      await productManager.updateProduct(id, updatedFields);
+      await Service.updateProduct(id, updatedFields);
       res.status(200).json({
         status: "Success",
         msg: "Producto actualizado exitosamente",
@@ -97,9 +90,9 @@ productsRouter.delete("/:pid", async (req, res) => {
   const id = req.params.pid;
 
   try {
-    const producto = await productManager.getProductById(id);
+    const producto = await Service.getProductById(id);
     if (producto) {
-      await productManager.deleteProduct(id);
+      await Service.deleteProduct(id);
       res.status(200).json({
         status: "Success",
         msg: `Se elimino el producto con code ${id} correctamente`,

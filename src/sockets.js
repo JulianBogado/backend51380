@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import { productManager } from "./routes/realTimeProducts.router.js";
+import { ChatModel } from "./DAO/models/messages.model.js";
 
-
-export  const  initServerSockets = (httpServer) => {
+export const initServerSockets = (httpServer) => {
   const socketServer = new Server(httpServer);
   socketServer.on("connection", (socket) => {
     console.log("Usuario conectado");
@@ -16,7 +16,12 @@ export  const  initServerSockets = (httpServer) => {
       await productManager.deleteProduct(id);
       socketServer.emit("product:deleted", id);
     });
-  });
-
-  return socketServer;
+    socketServer.on('connection', (socket) => {
+      socket.on('msg_front_to_back', async (msg) => {
+        const msgCreated = await ChatModel.create(msg);
+        const msgs = await ChatModel.find({});
+        socketServer.emit('msg_back_to_front', msgs);
+      });
+    });
+  })
 };

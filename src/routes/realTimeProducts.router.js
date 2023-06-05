@@ -1,4 +1,4 @@
-import ProductManager from "../productManager.js";
+import ProductManager from "../DAO/productManager.js";
 import express from 'express';
 
 export const productManager = new ProductManager("./src/data.json");
