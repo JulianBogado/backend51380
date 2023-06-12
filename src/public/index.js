@@ -111,3 +111,4 @@ socket.on('msg_back_to_front', (msgs) => {
   const divMsgs = document.getElementById('div-msgs');
   divMsgs.innerHTML = msgsFormateados;
 });
+

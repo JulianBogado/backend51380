@@ -33,3 +33,18 @@ export async function connectMongo() {
     throw "can not connect to the db";
   }
 }
+
+
+// Opciones de páginación
+
+export function getProductPaginationOptions(query) {
+  const { limit = 10, page = 1, sort } = query;
+
+  const options = {
+    limit: parseInt(limit),
+    page: parseInt(page),
+    sort: sort === "asc" ? { price: 1 } : sort === "desc" ? { price: -1 } : null,
+  };
+
+  return options;
+}

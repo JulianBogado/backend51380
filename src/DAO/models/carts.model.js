@@ -22,4 +22,9 @@ const cartSchema = new Schema({
   }
 }, { versionKey: false });
 
+cartSchema.pre('find', function() {
+  this.populate({
+    path: 'products.product'
+  });
+});
 export const CartModel = model("cart", cartSchema);

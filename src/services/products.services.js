@@ -1,11 +1,51 @@
 import { ProductModel } from "../DAO/models/products.model.js";
-
-
 export class ProductService {
   validateProduct(title, code, description, price, stock) {
     if ((!title, !code, !description, !price, !stock)) {
       console.log(`Error. Por favor complete los campos requeridos`);
       throw new Error("Por favor, valide los campos faltantes");
+    }
+  }
+
+    async getAllProducts(options) {
+    const { limit, page, sort } = options;
+
+    const filter = {};
+    const paginationOptions = {
+      limit: limit,
+      page: page,
+      sort: sort,
+    };
+
+    try {
+      const queryResult = await ProductModel.paginate(filter, paginationOptions);
+      const { docs, ...pagination } = queryResult;
+      const products = docs.map((doc) => ({
+        title: doc.title,
+        price: doc.price,
+        description: doc.description,
+        stock: doc.stock,
+        category: doc.category,
+        _id: doc._id,
+      }));
+
+      const response = {
+        status: "Success",
+        payload: products,
+        totalPages: pagination.totalPages,
+        prevPage: pagination.prevPage,
+        nextPage: pagination.nextPage,
+        page: pagination.page,
+        hasPrevPage: pagination.hasPrevPage,
+        hasNextPage: pagination.hasNextPage,
+        prevLink: pagination.hasPrevPage ? `/products?page=${pagination.prevPage}` : null,
+        nextLink: pagination.hasNextPage ? `/products?page=${pagination.nextPage}` : null,
+      };
+
+      return { products, response, pagination };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Error al obtener los productos");
     }
   }
   async addProduct(detail) {
