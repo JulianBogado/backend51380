@@ -2,6 +2,7 @@ import express from "express";
 
 import { ProductService } from "../services/products.services.js";
 
+
 export const productsRouter = express.Router();
 
 const Service = new ProductService();

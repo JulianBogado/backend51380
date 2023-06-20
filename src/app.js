@@ -10,7 +10,10 @@ import { initServerSockets } from "./sockets.js";
 import { chatRouter } from "./routes/chat.router.js";
 import { productsView } from "./routes/productsView.router.js";
 import { cartView } from "./routes/cartView.router.js";
-
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import { authRouter } from "./routes/auth.router.js";
+import { esAdmin, isUser } from "./middlewares/auth.js";
 
 const app = express();
 const port = 8080;
@@ -31,6 +34,18 @@ app.set("view engine", "handlebars");
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://CoderUser:vLSqrrQputf7JxQE@mongocoder.lfl9ccu.mongodb.net/51380?retryWrites=true&w=majority",
+    }),
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
 //API's Views
 
 app.use("/api/products", productsRouter);
@@ -41,8 +56,9 @@ app.use("/api/carts", cartsRouter);
 app.use("/home", homeRouter);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/chat", chatRouter);
-app.use("/products", productsView);
+app.use("/products", isUser, esAdmin, productsView);
 app.use("/carts", cartView);
+app.use('/auth', authRouter)
 app.get("/", (req, res) => {
   res.status(200).send("Entrega websockets");
 });

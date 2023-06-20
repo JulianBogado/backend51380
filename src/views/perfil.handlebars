@@ -1,0 +1,13 @@
+<body>
+  <div class="container">
+    <h1>Perfil de Usuario</h1>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Bienvenido {{user.firstName}} {{user.lastName}}</h5>
+        <p class="card-text"><strong>Email:</strong> {{user.email}}</p>
+        <p class="card-text"><strong>Rol:</strong> {{#if user.isAdmin}}Administrador
+        <p> <a href="/products">Ver listado de productos</a></p>{{else}}Usuario{{/if}}</p>
+        <a href="/auth/logout" class="btn btn-primary">Cerrar sesión</a>
+      </div>
+    </div>
+  </div>
