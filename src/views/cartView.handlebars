@@ -1,12 +1,19 @@
-<h1>Carrito de compras</h1>
-{{cart}}
-<h3>Carrito ID: {{_id}}</h3>
-{{#each products}}
-  <div>
-
-    <h3>Producto: {{this.product}}</h3>
-
-    <p>Cantidad: {{quantity}}</p>
-
+<div class="container">
+  <h1 class="mt-4">Carrito de compras</h1>
+  <div class="card mt-4">
+    <div class="card-body">
+      <h3 class="card-title">Carrito ID: {{_id}}</h3>
+      {{#each products}}
+        <div class="card mt-3">
+          <div class="card-body">
+            <h5 class="card-title">Producto: {{this.product.title}}</h5>
+            <p class="card-text">Cantidad: {{quantity}}</p>
+            <button class="btn btn-primary me-2">➕</button>
+            <button class="btn btn-secondary me-2">➖</button>
+            <button class="btn btn-danger">🗑️</button>
+          </div>
+        </div>
+      {{/each}}
+    </div>
   </div>
-{{/each}}
+</div>

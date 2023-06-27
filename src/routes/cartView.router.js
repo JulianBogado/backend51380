@@ -10,7 +10,7 @@ cartView.get("/:cid", async (req, res) => {
     const cid = req.params.cid;
     const cart = await serviceCart.getCartById(cid);
 
-    res.render("cartView", cart[0]);
+    res.render("cartView", cart[0].toObject());
     console.log(cart[0]);
   } catch (error) {
     console.error("Error al obtener el carrito de compras:", error);
