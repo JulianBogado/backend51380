@@ -1,6 +1,7 @@
 import express from "express";
 import { isUser, esAdmin } from "../middlewares/auth.js";
 import { UserModel } from "../DAO/models/user.model.js";
+import passport from "passport";
 
 export const authRouter = express.Router();
 
@@ -8,59 +9,60 @@ authRouter.get("/login", (req, res) => {
   return res.render("login", {});
 });
 
-authRouter.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).send({ error: "Faltan credenciales" });
+authRouter.post(
+  "/login",
+  passport.authenticate("login", { failureRedirect: "/auth/faillogin" }),
+  async (req, res) => {
+    if (!req.user) {
+      return res.json({ error: "invalid credentials" });
+    }
+    req.session.user = {
+      _id: req.user._id,
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      isAdmin: req.user.isAdmin,
+    };
+
+    return res.json({ msg: "ok", payload: req.user });
   }
-  const usuarioEncontrado = await UserModel.findOne({ email: email });
-  if (usuarioEncontrado && usuarioEncontrado.password === password) {
-    req.session.email = usuarioEncontrado.email;
-    req.session.isAdmin = usuarioEncontrado.isAdmin;
-    return res.redirect(`/auth/perfil?userId=${usuarioEncontrado._id}`);
-  } else {
-    return res.status(401).send({ error: "Usuario o contraseña incorrecta" });
-  }
-});
+);
 
 authRouter.get("/register", (req, res) => {
-  return res.render("register");
+  return res.render("register", {});
 });
 
-authRouter.post("/register", async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-  const isAdmin = false; // Establecemos el valor de isAdmin como false
+authRouter.post(
+  "/register",
+  passport.authenticate("register", { failureRedirect: "/auth/failregister" }),
+  (req, res) => {
+    if (!req.user) {
+      return res.json({ error: "something went wrong" });
+    }
+    req.session.user = {
+      _id: req.user._id,
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      isAdmin: req.user.isAdmin,
+    };
 
-  if (!email || !password || !firstName || !lastName) {
-    return res.status(400).json({ message: "Missing fields" });
+    return res.json({ msg: "ok", payload: req.user });
   }
-
-  try {
-    await UserModel.create({ email, password, firstName, lastName, isAdmin });
-    req.session.email = email;
-    req.session.isAdmin = isAdmin;
-    return res.redirect("/auth/perfil");
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ message: `Error creating user: ${error.message}` });
-  }
-});
+);
 
 authRouter.get("/perfil", isUser, esAdmin, async (req, res) => {
-    const userId = req.query.userId;
-    try {
-      const user = await UserModel.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
-      }
-      return res.render("perfil", { user: user.toObject() });
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+  const userId = req.query.userId;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
-  });
-  
+    return res.render("perfil", { user: user.toObject() });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 authRouter.get("/logout", (req, res) => {
   req.session.destroy((err) => {

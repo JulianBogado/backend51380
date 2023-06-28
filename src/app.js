@@ -14,6 +14,9 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import { authRouter } from "./routes/auth.router.js";
 import { esAdmin, isUser } from "./middlewares/auth.js";
+import passport from "passport";
+import { iniPassport } from "./config/passport.config.js";
+import { sessionsRouter } from "./routes/sessions.router.js";
 
 const app = express();
 const port = 8080;
@@ -46,6 +49,12 @@ app.use(
   })
 );
 
+//Init Passport
+
+iniPassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
 //API's Views
 
 app.use("/api/products", productsRouter);
@@ -53,15 +62,16 @@ app.use("/api/carts", cartsRouter);
 
 //Render Views
 
-app.use("/home", homeRouter);
+/* app.use("/home", homeRouter); */
+app.use('/api/sessions', sessionsRouter);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/chat", chatRouter);
 app.use("/products", isUser, esAdmin, productsView);
 app.use("/carts", cartView);
 app.use('/auth', authRouter)
-app.get("/", (req, res) => {
+/* app.get("/", (req, res) => {
   res.status(200).send("Entrega websockets");
-});
+}); */
 
 app.get("/*", (req, res) => {
   return res

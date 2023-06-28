@@ -21,13 +21,16 @@ export const __dirname = path.dirname(__filename);
 //----------------------Connect to Mongo-------------------------------
 
 import { connect, Schema, model } from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function connectMongo() {
   try {
     await connect(
       /* PONER TU STRING ENTERO ACA */
-      "mongodb+srv://CoderUser:vLSqrrQputf7JxQE@mongocoder.lfl9ccu.mongodb.net/51380?retryWrites=true&w=majority"
-    );
+      `${process.env.MONGO_URL}`,
+    )
+    console.log("Connected to Mongo");
   } catch (e) {
     console.log(e);
     throw "can not connect to the db";
@@ -48,3 +51,9 @@ export function getProductPaginationOptions(query) {
 
   return options;
 }
+
+//BCrypt
+
+import bcrypt from 'bcrypt';
+export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+export const isValidPassword = (password, hashPassword) => bcrypt.compareSync(password, hashPassword);

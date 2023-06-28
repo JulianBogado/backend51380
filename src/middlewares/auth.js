@@ -11,3 +11,5 @@ export function isUser(req, res, next) {
     }
     return res.status(403).json({msg: 'Error de autorizacion'});
   }
+
+  
