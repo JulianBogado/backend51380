@@ -39,10 +39,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://CoderUser:vLSqrrQputf7JxQE@mongocoder.lfl9ccu.mongodb.net/51380?retryWrites=true&w=majority",
-    }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL, ttl: 3600 }),
     secret: "secret",
     resave: true,
     saveUninitialized: true,
@@ -60,6 +57,7 @@ app.use(passport.session());
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 
+
 //Render Views
 
 /* app.use("/home", homeRouter); */
@@ -72,6 +70,10 @@ app.use('/auth', authRouter)
 /* app.get("/", (req, res) => {
   res.status(200).send("Entrega websockets");
 }); */
+app.get("/", (req, res) => {
+  res.status(200).send("Entrega complementaria");
+});
+
 
 app.get("/*", (req, res) => {
   return res

@@ -40,9 +40,9 @@ export function iniPassport() {
           if (!user) {
             const newUser = {
               email: profile.email,
-              firstName: profile._json.name || profile._json.login || 'noname',
-              lastName: 'nolast',
-              isAdmin: false,
+              first_name: profile._json.name || profile._json.login || 'noname',
+              last_name: 'nolast',
+              role: false,
               password: "no pass",
             };
             let userCreated = await UserModel.create(newUser);
@@ -91,7 +91,7 @@ export function iniPassport() {
       },
       async (req, username, password, done) => {
         try {
-          const { email, firstName, lastName } = req.body;
+          const { email, first_name, last_name, age } = req.body;
           let user = await UserModel.findOne({ email: username });
           if (user) {
             console.log('User already exists');
@@ -100,9 +100,10 @@ export function iniPassport() {
 
           const newUser = {
             email,
-            firstName,
-            lastName,
-            isAdmin: false,
+            first_name,
+            last_name,
+            age,
+            role: "user",
             password: createHash(password),
           };
           let userCreated = await UserModel.create(newUser);
