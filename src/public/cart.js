@@ -4,6 +4,7 @@ function addToCart(productId) {
   (async () => {
     try {
       let cartId = localStorage.getItem("cartId");
+      return cartId
 
       if (!cartId) {
         const response = await fetch("http://localhost:8080/api/carts", {
@@ -56,6 +57,11 @@ function updateCartBadge() {
       document.getElementById("badgeCarrito").textContent = "";
     }
   })();
+}
+
+function redirectToCart() {
+  const cartId = localStorage.getItem("cartId"); 
+  window.location.href = `/carts/${cartId}`;
 }
 
 updateCartBadge();

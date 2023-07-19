@@ -19,9 +19,9 @@ authRouter.post(
     req.session.user = {
       _id: req.user._id,
       email: req.user.email,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      isAdmin: req.user.isAdmin,
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      role: req.user.role,
     };
 
     return res.json({ msg: "ok", payload: req.user });
@@ -42,9 +42,10 @@ authRouter.post(
     req.session.user = {
       _id: req.user._id,
       email: req.user.email,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      isAdmin: req.user.isAdmin,
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      role: req.user.role,
     };
 
     return res.json({ msg: "ok", payload: req.user });
@@ -78,7 +79,7 @@ authRouter.get("/logout", (req, res) => {
 //Validar si es admin y usuario, y en caso afirmativo redirigirlo a /perfil. De lo contrario redirigirlo a /notUser
 authRouter.get("/perfil", isUser, esAdmin, async (req, res) => {
   try {
-    if (req.session.isAdmin) {
+    if (req.session.role) {
       return res.redirect("/perfil");
     } else {
       return res.redirect("/notUser");

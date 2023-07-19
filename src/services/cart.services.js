@@ -7,7 +7,7 @@ export class CartService {
     return cart;
   }
   async createCart() {
-  const cart = await CartModel.findOne({ _id: _id });
+  const cart = await CartModel.create({});
   return cart;
   }
   async addProductCart(cid, pid) {
