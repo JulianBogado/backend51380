@@ -13,7 +13,7 @@ import { cartView } from "./routes/cartView.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import { authRouter } from "./routes/auth.router.js";
-import { esAdmin, isUser } from "./middlewares/auth.js";
+import { esAdmin, isUser } from "./services/auth.services.js";
 import passport from "passport";
 import { iniPassport } from "./config/passport.config.js";
 import { sessionsRouter } from "./routes/sessions.router.js";
