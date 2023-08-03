@@ -1,13 +1,14 @@
 import { ProductModel } from "../DAO/models/products.model.js";
+
 export class ProductService {
   validateProduct(title, code, description, price, stock) {
-    if ((!title, !code, !description, !price, !stock)) {
-      console.log(`Error. Por favor complete los campos requeridos`);
+    if (!title || !code || !description || !price || !stock) {
+      console.log("Error. Por favor complete los campos requeridos");
       throw new Error("Por favor, valide los campos faltantes");
     }
   }
 
-    async getAllProducts(options) {
+  async getAllProducts(options) {
     const { limit, page, sort } = options;
 
     const filter = {};
@@ -18,7 +19,10 @@ export class ProductService {
     };
 
     try {
-      const queryResult = await ProductModel.paginate(filter, paginationOptions);
+      const queryResult = await ProductModel.paginate(
+        filter,
+        paginationOptions
+      );
       const { docs, ...pagination } = queryResult;
       const products = docs.map((doc) => ({
         title: doc.title,
@@ -38,8 +42,12 @@ export class ProductService {
         page: pagination.page,
         hasPrevPage: pagination.hasPrevPage,
         hasNextPage: pagination.hasNextPage,
-        prevLink: pagination.hasPrevPage ? `/products?page=${pagination.prevPage}` : null,
-        nextLink: pagination.hasNextPage ? `/products?page=${pagination.nextPage}` : null,
+        prevLink: pagination.hasPrevPage
+          ? `/products?page=${pagination.prevPage}`
+          : null,
+        nextLink: pagination.hasNextPage
+          ? `/products?page=${pagination.nextPage}`
+          : null,
       };
 
       return { products, response, pagination };
@@ -65,7 +73,6 @@ export class ProductService {
   async updateProduct(_id, updatedFields) {
     if (!_id) throw new Error("invalid _id");
     const { title, code, description, price, stock } = updatedFields;
-    this.validateProduct(title, code, description, price, stock);
     const productUpdated = await ProductModel.updateOne(
       { _id: _id },
       { $set: updatedFields }

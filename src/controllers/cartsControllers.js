@@ -1,22 +1,32 @@
-import { CartService } from "../services/cart.services.js";
+import CartService from "../services/cart.services.js";
+import UserDTO from "../DAO/DTO/users.dto.js";
+import TicketService from "../services/ticket.services.js";
 
 const ServiceCart = new CartService();
+const ServiceTicket = new TicketService();
+
 
 export const getCartById = async (req, res) => {
   try {
-    const cart = await ServiceCart.getCartById(req.params.cid);
+    const cartId = req.params.cid; // Obtén el parámetro 'cid' de la solicitud
+    const cart = await ServiceCart.getCartById(cartId); // Pasa el parámetro 'cid' al servicio
     if (cart) {
       res.status(200).json({
         status: "Success",
         msg: "Cart encontrado",
         payload: cart,
       });
+    } else {
+      res.status(404).json({
+        status: "Error",
+        msg: `No se encontró el carrito con ID: ${cartId}`,
+      });
     }
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    res.status(500).json({
       status: "Error",
-      msg: "No se encontró el cart con id" + req.params.cid,
+      msg: "Hubo un error al obtener el carrito",
     });
   }
 };
@@ -39,8 +49,10 @@ export const createCart = async (req, res) => {
 };
 
 export const addProductToCart = async (req, res) => {
+  const cartId = req.params.cid;
+  const prodId = req.params.pid;
   try {
-    await ServiceCart.addProductToCart(req.params.cid, req.params.pid);
+    await ServiceCart.addProductToCart(cartId, prodId);
     res.status(200).json({
       status: "Success",
       msg: `Se agrego el producto con id: ${req.params.pid} al carrito: ${req.params.cid}`,
@@ -75,13 +87,13 @@ export const emptyCart = async (req, res) => {
     await ServiceCart.emptyCart(req.params.cid);
     return res.status(200).json({
       status: "Succes",
-      msg: `Se vació el carrito ${req.params.cid}`
-    })
+      msg: `Se vació el carrito ${req.params.cid}`,
+    });
   } catch (error) {
     return res.status(400).json({
       status: "Error",
-      msg: `No se logró vaciar el carrito`
-    })
+      msg: `No se logró vaciar el carrito`,
+    });
   }
 };
 
@@ -123,3 +135,5 @@ export const updateProductFromCart = async (req, res) => {
     });
   }
 };
+
+

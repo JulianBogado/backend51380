@@ -4,7 +4,7 @@ import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
 const LocalStrategy = local.Strategy;
 import dotenv from 'dotenv';
-import { UserModel } from '../DAO/models/user.model.js';
+import { UserModel } from "../DAO/mongo/models/user.model.js";
 
 dotenv.config();
 export function iniPassport() {

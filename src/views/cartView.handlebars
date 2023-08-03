@@ -6,7 +6,7 @@
       {{#each products}}
         <div class="card mt-3">
           <div class="card-body">
-            <h5 class="card-title">Producto: {{this.product.title}}</h5>
+            <h5 class="card-title">Producto: {{this.title}}</h5>
             <p class="card-text">Cantidad: {{quantity}}</p>
             <button class="btn btn-primary me-2">➕</button>
             <button class="btn btn-secondary me-2">➖</button>
@@ -14,6 +14,11 @@
           </div>
         </div>
       {{/each}}
+      <div>
+        <h3>Total: ${{total}}</h3>
+        <button class="btn btn-success" > <a href='/carts/{{_id}}/purchase'>Finalizar compra</a></button>
+      </div>
     </div>
   </div>
 </div>
+

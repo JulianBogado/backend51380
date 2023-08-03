@@ -1,5 +1,5 @@
 import passport from "passport";
-import { UserModel } from "../DAO/models/user.model.js";
+import { UserModel } from "../DAO/mongo/models/user.model.js";
 
 export const renderLogin = (req, res) => {
   return res.render("login", {});

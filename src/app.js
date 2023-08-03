@@ -13,7 +13,7 @@ import { cartView } from "./routes/cartView.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import { authRouter } from "./routes/auth.router.js";
-import { esAdmin, isUser } from "./services/auth.services.js";
+import { esAdmin, isUser, userButNotAdmin } from "./services/auth.services.js";
 import passport from "passport";
 import { iniPassport } from "./config/passport.config.js";
 import { sessionsRouter } from "./routes/sessions.router.js";
@@ -63,8 +63,8 @@ app.use("/api/carts", cartsRouter);
 /* app.use("/home", homeRouter); */
 app.use('/api/sessions', sessionsRouter);
 app.use("/realtimeproducts", realTimeProducts);
-app.use("/chat", chatRouter);
-app.use("/products", isUser, esAdmin, productsView);
+app.use("/chat", userButNotAdmin, chatRouter);
+app.use("/products", userButNotAdmin, productsView);
 app.use("/carts", cartView);
 app.use('/auth', authRouter)
 /* app.get("/", (req, res) => {

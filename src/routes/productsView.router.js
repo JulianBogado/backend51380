@@ -1,6 +1,7 @@
 import { ProductService } from "../services/products.services.js";
 import express from "express";
 import { getProductPaginationOptions } from "../utils.js";
+import { userButNotAdmin } from "../services/auth.services.js";
 
 export const productsView = express.Router();
 

@@ -1,19 +1,12 @@
 import express from "express";
-import { CartService } from "../services/cart.services.js";
-
+import CartService from "../services/cart.services.js";
+import * as cartsViewController from "../controllers/cartsView.controller.js";
 export const cartView = express.Router();
 
 const serviceCart = new CartService();
 
-cartView.get("/:cid", async (req, res) => {
-  try {
-    const cid = req.params.cid;
-    const cart = await serviceCart.getCartById(cid);
+cartView.get("/:cid", cartsViewController.getCartById);
 
-    res.render("cartView", cart[0].toObject());
-    console.log(cart[0]);
-  } catch (error) {
-    console.error("Error al obtener el carrito de compras:", error);
-    res.status(500).send("Error al obtener el carrito de compras");
-  }
-});
+cartView.put('/:cid/purchase',  cartsViewController.purchaseCart);
+
+cartView.get('/purchase/:cid',  cartsViewController.getTicketById);
