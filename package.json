@@ -34,5 +34,8 @@
     "url": "https://github.com/JulianBogado/backend51380/issues"
   },
   "homepage": "https://github.com/JulianBogado/backend51380#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^8.0.2"
+  }
 }

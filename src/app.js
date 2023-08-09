@@ -17,7 +17,8 @@ import { esAdmin, isUser, userButNotAdmin } from "./services/auth.services.js";
 import passport from "passport";
 import { iniPassport } from "./config/passport.config.js";
 import { sessionsRouter } from "./routes/sessions.router.js";
-
+import errorHandler from "./middlewares/error.js";
+import { mockingRouter } from "./routes/mocking.router.js";
 const app = express();
 const port = 8080;
 app.use(express.json());
@@ -57,23 +58,20 @@ app.use(passport.session());
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 
-
 //Render Views
 
 /* app.use("/home", homeRouter); */
-app.use('/api/sessions', sessionsRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/chat", userButNotAdmin, chatRouter);
 app.use("/products", userButNotAdmin, productsView);
 app.use("/carts", cartView);
-app.use('/auth', authRouter)
+app.use("/auth", authRouter);
+app.use("/mockingproducts", mockingRouter);
+app.use(errorHandler);
 /* app.get("/", (req, res) => {
   res.status(200).send("Entrega websockets");
 }); */
-app.get("/", (req, res) => {
-  res.status(200).send("Entrega complementaria");
-});
-
 
 app.get("/*", (req, res) => {
   return res

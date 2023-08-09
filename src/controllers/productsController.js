@@ -1,57 +1,57 @@
+import CustomError from "../services/errors/custom-error.js";
+import EErrors from "../services/errors/enums.js";
 import { ProductService } from "../services/products.services.js";
 
 const productService = new ProductService();
 
 export const getProducts = async (req, res) => {
-  try {
-    // Agregar el limit por query limit = req.query.limit;
-    const productos = await productService.getProducts();
-    console.log(productos);
-
+  // Agregar el limit por query limit = req.query.limit;
+  const productos = await productService.getProducts();
+  if (productos) {
     res.status(200).json(productos);
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({
-      status: "Failed",
-      msg: "Error al obtener los productos",
-      error: error,
+  } else {
+    CustomError.createError({
+      name: "Error al obtener los productos",
+      cause: "Failed to catch products from database",
+      message: "Hubo un error al obtener los productos, intentelo mas tarde",
+      code: EErrors.DATABASE_ERROR,
     });
   }
 };
 
 export const addProduct = async (req, res) => {
   const detail = req.body;
-  try {
-    const product = await productService.addProduct(detail);
+  const product = await productService.addProduct(detail);
+  if (product) {
     res.status(201).json({
       status: "Success",
       msg: "Se agregó un nuevo producto",
       payload: { ...product },
     });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json("No se pudo agregar el producto");
+  } else {
+    CustomError.createError({
+      name: "Error al agregar el producto",
+      cause: "Failed to add product to database",
+      message: "Hubo un error al agregar el producto, intentelo mas tarde",
+      code: EErrors.DATABASE_ERROR,
+    });
   }
 };
 
 export const getProductById = async (req, res) => {
-  try {
-    const producto = await productService.getProductById(req.params.pid);
-    if (producto) {
-      res.status(200).json({
-        status: "Success",
-        msg: "Se encontro el producto",
-        payload: producto,
-      });
-    } else {
-      res.status(404).json("Producto no encontrado");
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({
-      status: "Failed",
-      msg: "Error al obtener los productos",
-      error: error,
+  const producto = await productService.getProductById(req.params.pid);
+  if (producto) {
+    res.status(200).json({
+      status: "Success",
+      msg: "Se encontro el producto",
+      payload: producto,
+    });
+  } else {
+    CustomError.createError({
+      name: "Error al obtener el producto",
+      cause: "Failed to catch product from database",
+      message: "Hubo un error al obtener el producto, intentelo mas tarde",
+      code: EErrors.DATABASE_ERROR,
     });
   }
 };

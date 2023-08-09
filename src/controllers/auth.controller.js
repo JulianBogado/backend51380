@@ -1,5 +1,7 @@
 import passport from "passport";
 import { UserModel } from "../DAO/mongo/models/user.model.js";
+import CustomError from "../services/errors/custom-error.js";
+import EErrors from "../services/errors/enums.js";
 
 export const renderLogin = (req, res) => {
   return res.render("login", {});
@@ -19,14 +21,15 @@ export const register = passport.authenticate("register", {
 
 export const getPerfil = async (req, res) => {
   const userId = req.query.userId;
-  try {
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    return res.render("perfil", { user: user.toObject() });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    CustomError.createError({
+      name: "User not found",
+      cause: "User not found",
+      message: "User not found",
+      code: EErrors.USER_NOT_FOUND,
+    });
   }
 };
 

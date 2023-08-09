@@ -77,16 +77,17 @@ authRouter.post(
 
 authRouter.get("/perfil", isUser, esAdmin, async (req, res) => {
   const userId = req.query.userId;
-  try {
     const user = await UserModel.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      CustomError.createError({
+        name: "User not found",
+        cause: "User not found",
+        message: "User not found",
+        code: EErrors.USER_NOT_FOUND,
+      });
     }
-    return res.render("perfil", { user: user.toObject() });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
   }
-});
+);
 
 authRouter.get("/logout", (req, res) => {
   req.session.destroy((err) => {
