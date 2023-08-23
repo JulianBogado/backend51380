@@ -1,4 +1,5 @@
 import multer from "multer";
+import { logger } from "./middlewares/logger.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,9 +31,9 @@ export async function connectMongo() {
       /* PONER TU STRING ENTERO ACA */
       `${process.env.MONGO_URL}`,
     )
-    console.log("Connected to Mongo");
+    logger.info("Connected to Mongo");
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     throw "can not connect to the db";
   }
 }

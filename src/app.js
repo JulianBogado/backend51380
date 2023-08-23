@@ -19,22 +19,25 @@ import { iniPassport } from "./config/passport.config.js";
 import { sessionsRouter } from "./routes/sessions.router.js";
 import errorHandler from "./middlewares/error.js";
 import { mockingRouter } from "./routes/mocking.router.js";
+import { addLogger, logger } from "./middlewares/logger.js";
+import { loggerRouter } from "./routes/logger.router.js";
+
 const app = express();
 const port = 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const httpServer = app.listen(port, () => {
-  console.log(`App listening on ${port} http://localhost:${port}`);
+  logger.info(`App listening on ${port} http://localhost:${port}`);
 });
 
 connectMongo();
 initServerSockets(httpServer);
 
+app.use(addLogger);
 app.engine("handlebars", handlebars.engine());
 app.set("views", path.join(__dirname, "./views"));
 app.set("view engine", "handlebars");
-
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -68,6 +71,7 @@ app.use("/products", userButNotAdmin, productsView);
 app.use("/carts", cartView);
 app.use("/auth", authRouter);
 app.use("/mockingproducts", mockingRouter);
+app.use("/loggerTest", loggerRouter);
 app.use(errorHandler);
 /* app.get("/", (req, res) => {
   res.status(200).send("Entrega websockets");
