@@ -21,6 +21,8 @@ import errorHandler from "./middlewares/error.js";
 import { mockingRouter } from "./routes/mocking.router.js";
 import { addLogger, logger } from "./middlewares/logger.js";
 import { loggerRouter } from "./routes/logger.router.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
 const app = express();
 const port = 8080;
@@ -33,6 +35,25 @@ const httpServer = app.listen(port, () => {
 
 connectMongo();
 initServerSockets(httpServer);
+
+//Swagger
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+
+    info: {
+      title: "Documentación de e-commerce",
+
+      description: "Documentación del proyecto e-commerce para CoderHouse",
+    },
+  },
+
+  apis: [`${__dirname}/docs/**/*.yaml`],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.use(addLogger);
 app.engine("handlebars", handlebars.engine());
@@ -64,6 +85,7 @@ app.use("/api/carts", cartsRouter);
 //Render Views
 
 /* app.use("/home", homeRouter); */
+
 app.use("/api/sessions", sessionsRouter);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/chat", userButNotAdmin, chatRouter);

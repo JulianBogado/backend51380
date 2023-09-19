@@ -1,0 +1,191 @@
+paths:
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por su ID.
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Carrito no encontrado.
+
+  /api/carts:
+    post:
+      summary: Crear un nuevo carrito.
+      responses:
+        '200':
+          description: Nuevo carrito creado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+
+    put:
+      summary: Actualizar un carrito.
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      responses:
+        '200':
+          description: Carrito actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Carrito no encontrado.
+
+    delete:
+      summary: Vaciar un carrito.
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito vaciado exitosamente.
+        '404':
+          description: Carrito no encontrado.
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agregar un producto a un carrito.
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito.
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto añadido exitosamente al carrito.
+        '404':
+          description: Carrito o Producto no encontrado.
+
+    put:
+      summary: Actualizar la cantidad de un producto en un carrito.
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito.
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: Nueva cantidad del producto en el carrito.
+                  example: 3
+      responses:
+        '200':
+          description: Cantidad de producto actualizada exitosamente en el carrito.
+        '404':
+          description: Carrito o Producto no encontrado.
+
+    delete:
+      summary: Eliminar un producto de un carrito.
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito.
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado exitosamente del carrito.
+        '404':
+          description: Carrito o Producto no encontrado.
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        products:
+          type: array
+          description: Lista de productos en el carrito.
+          items:
+            type: object
+            properties:
+              product:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: ID del producto.
+                  title:
+                    type: string
+                    description: Título del producto.
+                  description:
+                    type: string
+                    description: Descripción del producto.
+                  price:
+                    type: number
+                    description: Precio del producto.
+                  thumbnail:
+                    type: string
+                    description: URL de la imagen del producto.
+                  stock:
+                    type: integer
+                    description: Cantidad en stock del producto.
+                  category:
+                    type: string
+                    description: Categoría del producto.
+                  code:
+                    type: string
+                    description: Código único del producto.
+                  status:
+                    type: boolean
+                    description: Estado del producto (activo/inactivo).
+              quantity:
+                type: integer
+                description: Cantidad del producto en el carrito.
